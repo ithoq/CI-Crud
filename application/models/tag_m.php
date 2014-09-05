@@ -5,6 +5,8 @@ class Tag_m extends MY_Model {
 
     protected $table_name = 'tags';
 
+
+    // TODO: REWRITE THIS FUNCTION, CHECK LARAVEL QUERIES
     public function store($entity_id, $tag_type, $input_tags)
     {
         // Input tags to array
@@ -35,7 +37,7 @@ class Tag_m extends MY_Model {
         // Get existing tags for tag type
         // get existing tags for entity id
         $entity_tags = $this->getEntityTags($entity_id, $tag_type);
-        $existing_tags = $this->get2ndChildVal($entity_tags);
+        $existing_tags = get2ndChildVal($entity_tags);
 
 
         // Define tag-entity relations to be removed
@@ -86,18 +88,6 @@ class Tag_m extends MY_Model {
         return $this->db->query($sql);
     }
 
-    public function get2ndChildVal($entity_tags)
-    {
-        $existing_tags = array();
-        foreach($entity_tags as $key => $value) {
-            foreach($value as $k => $val)
-            {
-                $existing_tags[] = intval($val);
-            }
-        }
-        return $existing_tags;
-    }
-
     public function getEntityTags($id, $tag_type)
     {
         $this->select('tag_id');
@@ -124,7 +114,7 @@ class Tag_m extends MY_Model {
 
     public function storeTags($new_tags)
     {
-        $sql = "INSERT INTO $this->table_name (title) VALUES ";
+        $sql = "INSERT INTO $this->table_name (tag_title) VALUES ";
         $i = 0;
         foreach($new_tags as $tag) {
             if($i != 0) $sql .= ',';
@@ -143,7 +133,7 @@ class Tag_m extends MY_Model {
         $sql = '';
         foreach($input_tags as $tag) {
             if(!$i == 0) $sql .= 'UNION ';
-            $sql .= "SELECT id, title FROM tags WHERE title='$tag' ";
+            $sql .= "SELECT id, tag_title FROM tags WHERE tag_title='$tag' ";
             $i++;
         }
         $existing_tags = $this->db->query($sql)->result_array();
@@ -151,7 +141,7 @@ class Tag_m extends MY_Model {
         $existing_tags_array = array();
         foreach($existing_tags as $key => $value)
         {
-            $existing_tags_array[$value['id']] = $value['title'];
+            $existing_tags_array[$value['id']] = $value['tag_title'];
         }
 
         return $existing_tags_array;
@@ -175,7 +165,46 @@ class Tag_m extends MY_Model {
         return $tags;
     }
 
+    public function tagsArrayToCommaList()
+    {
+
+    }
 
 
+    public function getTagsById($id)
+    {
+        // TODO: make into one query with join statements
+        // Get tag_ids via taggable
+        $this->db->select('tag_id');
+        $this->db->where('taggable_id', $id);
+        $this->db->where('tag_type', 'articles');
+        $taggable = $this->db->get('taggable')->result_array();
+        $tag_ids = get2ndChildVal($taggable);
 
+        // Get tags
+        $this->db->select('tag_title');
+        $this->db->where_in('id', $tag_ids);
+        $tags_array = $this->db->get($this->table_name)->result_array();
+
+        // convert array to comma separated list
+        $tags = $this->tagsArrToCommaList($tags_array);
+
+        return $tags;
+    }
+
+    public function tagsArrToCommaList($tags_array)
+    {
+        $tags = '';
+        $i = 0;
+        foreach($tags_array as $key => $value)
+        {
+            foreach($value as $k => $v) {
+                $i == 0 || $tags .= ', ';
+                $tags .= $v;
+                $i++;
+            }
+        }
+
+        return $tags;
+    }
 }

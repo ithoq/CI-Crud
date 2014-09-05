@@ -11,26 +11,12 @@ class Dashboard extends Admin_Controller {
     {
         // Fetch 5 recently modified articles
         $this->load->model('article_m');
-        $this->db->order_by('modified');
+        $this->db->order_by('modified', 'desc');
         $this->db->limit(5);
-        $this->data['recent_articles'] = $this->article_m->get();
+        $this->data['recent_articles'] = $this->article_m->getWithTagsAndCategories();
 
         $this->data['subview'] = 'admin/dashboard/index';
-        $this->load->view('admin/_main_layout', $this->data);
+        $this->load->view('admin/main_layout', $this->data);
     }
 
-    function show()
-    {
-
-    }
-
-    function create()
-    {
-
-    }
-
-    function edit()
-    {
-
-    }
 }

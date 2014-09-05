@@ -8,7 +8,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <?php echo anchor('admin/dashboard', $meta_title, 'class="navbar-brand"'); ?>
+            <?php echo anchor('admin/dashboard', $site_name, 'class="navbar-brand"'); ?>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->

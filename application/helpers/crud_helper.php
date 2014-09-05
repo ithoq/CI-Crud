@@ -56,22 +56,46 @@ function _unique_slug($str)
     return TRUE;
 }
 
-//
-function get_category_array($array)
+function btn_edit ($uri)
 {
-    $keys = array();
-    $values = array();
-    $i = 0;
-    foreach($array as $key => $value) {
-        foreach($value as $key => $val)
-        {
-            $i++;
-            if($i % 2 == 1) $keys[] = $val;
-            if($i % 2 == 0) $values[] = $val;
-        }
+    return anchor($uri, '<span class="glyphicon glyphicon-edit"></span>');
+}
+
+function btn_delete ($uri)
+{
+    return anchor($uri, '<span class="glyphicon glyphicon-remove"></span>', array(
+        'onclick' => "return confirm('You are about to delete a record. This cannot be undone. Are you sure?');"
+    ));
+}
+
+
+/**
+ * Reformat array values to "form selected" values
+ */
+function toSelectedValsFormat($data)
+{
+    // Convert to form selected format
+    $array = array();
+    foreach($data as $key => $value) {
+        $array[] = $key;
     }
 
-    $result = array_combine($keys, $values);
+    return $array;
+}
 
-    return $result;
+/**
+ * @param $data
+ * @return array
+ * Convert result array to id => title format
+ */
+function toIdTitleFormat($data)
+{
+    // Format as id => title
+    $array = array();
+
+    foreach($data as $item) {
+        $array[$item['id']] = $item['title'];
+    }
+
+    return $array;
 }

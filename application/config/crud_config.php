@@ -1,4 +1,4 @@
 <?php
 
-$config['site_name'] = 'CodeigniterCRUD';
-$config['summary_len'] = 50;
+$config['site_name'] = 'Codeigniter CRUD';
+$config['meta_title'] = 'CodeigniterCRUD';

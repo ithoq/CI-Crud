@@ -15,20 +15,7 @@ class MY_Model extends CI_Model {
         parent::__construct();
     }
 
-    public function makeEmptyObj()
-    {
-        $class = new stdClass();
-        foreach($this->post_keys as $key)
-        {
-            $class->$key = '';
-        }
-
-        $class->pubdate = date('Y-m-d');
-
-        return $class;
-    }
-
-    public function array_from_post()
+    public function arrayFromPost()
     {
         $data = array();
         foreach($this->post_keys as $field)
@@ -42,6 +29,15 @@ class MY_Model extends CI_Model {
     public function get($method = 'result')
     {
         return $this->db->get($this->table_name)->$method();
+    }
+
+    public function getById($id)
+    {
+
+        $this->db->where($this->primary_key, $id);
+
+        return $this->db->get($this->table_name)->row();
+
     }
 
 //    public function getById($id)
@@ -61,5 +57,6 @@ class MY_Model extends CI_Model {
     {
         $this->db->select($values);
     }
+
 
 }
